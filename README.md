@@ -1,55 +1,44 @@
-# 💳 Credit Risk Modelling
+# Credit Risk Modelling
 
-A Machine Learning based **Credit Risk Prediction System** that predicts whether a customer represents **Good Credit Risk** or **Bad Credit Risk** based on financial and personal attributes.
+Machine Learning system that predicts whether a loan applicant represents **Good Credit Risk** or **Bad Credit Risk** using customer and loan attributes.
 
-The project includes data preprocessing, exploratory data analysis, feature encoding, model training, evaluation, model saving, and an interactive **Streamlit web application** for real-time prediction.
+## Overview
 
----
+This project builds a credit-risk classification pipeline using the **German Credit Dataset**. It covers data preprocessing, exploratory analysis, categorical encoding, model training, hyperparameter tuning, evaluation, model serialization, and a Streamlit application for credit-risk prediction.
 
-## 🚀 Live Demo
+## Key Features
 
-🌐 **Streamlit App:** Add your deployed Streamlit URL here
+- Data cleaning and preprocessing
+- Exploratory Data Analysis
+- Categorical feature encoding
+- Multiple classification models
+- Hyperparameter tuning using GridSearchCV
+- Model comparison using accuracy
+- Saved trained model and encoders
+- Interactive Streamlit prediction interface
 
----
+## Tech Stack
 
-## 📌 Project Overview
+| Category | Technologies |
+|---|---|
+| Language | Python |
+| Data Processing | Pandas, NumPy |
+| Visualization | Matplotlib, Seaborn |
+| Machine Learning | Scikit-learn, XGBoost |
+| Model Persistence | Joblib |
+| Application | Streamlit |
+| Development | Jupyter Notebook |
 
-Credit risk assessment is an important task for banks and financial institutions.
-
-Before approving a loan, financial institutions need to estimate the likelihood that a customer will repay the borrowed amount.
-
-This project uses Machine Learning to classify applicants into:
-
-- 🟢 **Good Credit Risk**
-- 🔴 **Bad Credit Risk**
-
-The goal is to build a practical ML application that can assist with credit-risk assessment using historical customer data.
-
----
-
-## 🎯 Objectives
-
-- Analyze customer credit data
-- Perform data preprocessing and cleaning
-- Encode categorical variables
-- Train multiple Machine Learning classification models
-- Compare model performance
-- Save the trained model and encoders
-- Build an interactive Streamlit application
-- Generate real-time credit-risk predictions
-
----
-
-## 🧠 Machine Learning Workflow
+## ML Workflow
 
 ```text
-Customer Credit Data
+German Credit Dataset
         ↓
 Data Cleaning
         ↓
-Exploratory Data Analysis
+Missing Value Handling
         ↓
-Feature Engineering
+Feature Selection
         ↓
 Categorical Encoding
         ↓
@@ -57,174 +46,86 @@ Train-Test Split
         ↓
 Model Training
         ↓
-Model Evaluation
+GridSearchCV
         ↓
-Model Selection
+Model Evaluation
         ↓
 Model Serialization
         ↓
-Streamlit Application
-        ↓
-Credit Risk Prediction
+Streamlit Prediction
 ```
 
----
-
-## 📊 Dataset
+## Dataset
 
 The project uses the **German Credit Dataset**.
 
-The dataset contains customer information such as:
+| Detail | Value |
+|---|---:|
+| Original Records | 1,000 |
+| Records After Cleaning | 522 |
+| Features | 9 |
+| Train/Test Split | 80/20 |
+| Training Samples | 417 |
+| Testing Samples | 105 |
+| Target | `Risk` |
 
-- Age
-- Sex
-- Job
-- Housing
-- Saving Accounts
-- Checking Account
-- Credit Amount
-- Duration
-- Purpose
-
-### Dataset Location
-
-```text
-data/
-└── german_credit_data.csv
-```
-
----
-
-## 🔍 Features Used
+### Features
 
 | Feature | Description |
 |---|---|
-| Age | Customer age |
-| Sex | Customer gender |
-| Job | Job category |
-| Housing | Housing status |
-| Saving accounts | Customer savings category |
-| Checking account | Checking account status |
-| Credit amount | Requested credit amount |
-| Duration | Loan duration |
-| Purpose | Purpose of the loan |
+| `Age` | Customer age |
+| `Sex` | Customer sex |
+| `Job` | Job category |
+| `Housing` | Housing status |
+| `Saving accounts` | Savings account category |
+| `Checking account` | Checking account category |
+| `Credit amount` | Credit amount |
+| `Duration` | Loan duration |
+| `Purpose` | Loan purpose |
 
----
+### Target
 
-## 🤖 Machine Learning Models
+`Risk`
 
-The project experiments with multiple classification algorithms:
+- `good`
+- `bad`
 
-### 🌳 Decision Tree
-Used as a baseline classification model.
+After preprocessing:
 
-### 🌲 Random Forest
-An ensemble learning algorithm that combines multiple decision trees.
+- Good Risk: **291**
+- Bad Risk: **231**
 
-### 🌲 Extra Trees
-An ensemble model based on randomized decision trees.
+## Model & Performance
 
-### ⚡ XGBoost
-A gradient boosting algorithm used for classification.
-
----
-
-## 📈 Model Performance
-
-The models were evaluated using classification accuracy.
+Multiple classification models were evaluated:
 
 | Model | Accuracy |
 |---|---:|
 | Decision Tree | 59.05% |
 | Random Forest | 63.81% |
-| Extra Trees | 65.71% |
-| XGBoost | **73.33%** |
+| Extra Trees | **65.71%** |
+| XGBoost | 73.33% |
 
-### 🏆 Best Experimental Model
-
-**XGBoost — 73.33% Accuracy**
-
-> Note: The Streamlit application should use the same model reported as the deployed model. If `extra_tress_credit_model.pkl` is used in `app.py`, update this section to reflect the deployed Extra Trees model, or replace the deployed model with the trained XGBoost model.
-
----
-
-## 💾 Saved Models
-
-The trained model is stored using Joblib.
+The saved model used by the Streamlit application is:
 
 ```text
-models/
-└── extra_tress_credit_model.pkl
+models/extra_tress_credit_model.pkl
 ```
 
-Categorical encoders:
+### Model Training
+
+The Extra Trees model was tuned using **GridSearchCV with 5-fold cross-validation**.
+
+**Extra Trees Test Accuracy:** `65.71%`
+
+## Project Structure
 
 ```text
-encoders/
-├── Sex_encoder.pkl
-├── Housing_encoder.pkl
-├── Saving accounts_encoder.pkl
-├── Checking account_encoder.pkl
-├── Purpose_encoder.pkl
-└── target_encoder.pkl
-```
-
----
-
-## 🖥️ Streamlit Application
-
-The project includes an interactive Streamlit application where users can enter customer information and receive a credit-risk prediction.
-
-### Application Features
-
-- 📋 Customer information input
-- 💰 Credit amount input
-- 🏠 Housing information
-- 💼 Job information
-- 💳 Account information
-- 🎯 Loan purpose selection
-- ⚡ Real-time prediction
-- 🟢 Good Credit Risk result
-- 🔴 Bad Credit Risk result
-
----
-
-## 📸 Project Screenshots
-
-### Streamlit Dashboard
-
-![Streamlit Dashboard](Project%20Images/App%20Dashboard%20Image.jpg)
-
-### Good Credit Risk
-
-![Good Credit Risk](Project%20Images/Good%20Credit%20Risk.jpg)
-
-### Bad Credit Risk
-
-![Bad Credit Risk](Project%20Images/Bad%20Credit%20Risk.jpg)
-
----
-
-## 🏗️ Project Architecture
-
-![Credit Risk Pipeline](Project%20Images/Project%20Structure%20Credit%20Risk%20Pipeline.png)
-
----
-
-## 🔄 Project Workflow
-
-![Project Workflow](Project%20Images/WORK%20FLOW%20OF%20PROJECT.png)
-
----
-
-## 📂 Project Structure
-
-```text
-Credit-Risk-Modelling/
+Credit Risk Modeling/
 │
 ├── app.py
+├── analysis_model.ipynb
 ├── requirements.txt
-├── README.md
 │
 ├── data/
 │   └── german_credit_data.csv
@@ -240,209 +141,91 @@ Credit-Risk-Modelling/
 │   ├── Purpose_encoder.pkl
 │   └── target_encoder.pkl
 │
-├── analysis_model.ipynb
-│
 └── Project Images/
     ├── App Dashboard Image.jpg
     ├── Bad Credit Risk.jpg
     ├── Good Credit Risk.jpg
+    ├── credit_risk_background.webp.webp
     ├── Project Structure Credit Risk Pipeline.png
     ├── PROJECT STRUCTURE IMAGE.png
     └── WORK FLOW OF PROJECT.png
 ```
 
----
+## Installation & Run
 
-## 🛠️ Technologies Used
-
-### Programming
-- Python
-
-### Data Science
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-
-### Machine Learning
-- Scikit-learn
-- XGBoost
-
-### Model Serialization
-- Joblib
-
-### Deployment
-- Streamlit
-
-### Development Tools
-- Jupyter Notebook
-- Git
-- GitHub
-
----
-
-## ⚙️ Installation & Setup
-
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/harshantla-cloud/CREDIT-RISK-MODELLING.git
-```
-
-### 2. Navigate to the Project
-
-```bash
 cd CREDIT-RISK-MODELLING
 ```
 
-### 3. Create a Virtual Environment
+### Create Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-### 4. Activate the Virtual Environment
+### Activate Environment
 
-#### Windows
+**Windows**
 
 ```bash
 venv\Scripts\activate
 ```
 
-#### Linux / macOS
+**Linux/macOS**
 
 ```bash
 source venv/bin/activate
 ```
 
-### 5. Install Dependencies
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 6. Run the Streamlit Application
+### Run Streamlit App
 
 ```bash
 streamlit run app.py
 ```
 
-The application will open in your browser.
+## Live Demo
 
----
+[Credit Risk Modelling – Live Demo](https://harsh-credit-risk.streamlit.app/)
 
-## 📦 Requirements
+## Screenshots
 
-Recommended `requirements.txt`:
+### Streamlit Dashboard
 
-```text
-streamlit
-pandas
-numpy
-scikit-learn
-xgboost
-joblib
-```
+![Streamlit Dashboard](Project%20Images/App%20Dashboard%20Image.jpg)
 
----
+### Good Credit Risk
 
-## 🌐 Deployment
+![Good Credit Risk](Project%20Images/Good%20Credit%20Risk.jpg)
 
-This application can be deployed using **Streamlit Community Cloud**.
+### Bad Credit Risk
 
-### Deployment Steps
+![Bad Credit Risk](Project%20Images/Bad%20Credit%20Risk.jpg)
 
-1. Push the project to GitHub.
-2. Open Streamlit Community Cloud.
-3. Connect your GitHub repository.
-4. Select `app.py` as the main file.
-5. Deploy the application.
-6. Add the generated public URL to the **Live Demo** section.
+### ML Workflow
 
----
+![ML Workflow](Project%20Images/WORK%20FLOW%20OF%20PROJECT.png)
 
-## 🧪 Prediction Flow
+## Future Improvements
 
-```text
-User Input
-    ↓
-Data Validation
-    ↓
-Categorical Encoding
-    ↓
-Feature Preparation
-    ↓
-Trained ML Model
-    ↓
-Credit Risk Prediction
-    ↓
-Good / Bad Credit Risk
-```
+- Improve model performance through further hyperparameter tuning
+- Add model explainability
+- Add feature importance visualization
+- Improve credit-risk scoring
+- Enhance Streamlit UI/UX
+- Add model monitoring
+- Automate model retraining
 
----
+## Author
 
-## 📚 Key Learnings
+**Harsh**
 
-Through this project, I worked on:
-
-- Data preprocessing
-- Exploratory Data Analysis
-- Feature engineering
-- Categorical encoding
-- Classification algorithms
-- Model comparison
-- Model evaluation
-- Model serialization
-- Streamlit application development
-- Machine Learning deployment
-- Git and GitHub workflow
-
----
-
-## 🔮 Future Improvements
-
-- Hyperparameter tuning
-- Cross-validation
-- Class imbalance handling
-- SHAP-based explainable AI
-- Feature importance visualization
-- Probability-based credit-risk scoring
-- Improved Streamlit UI/UX
-- Model monitoring
-- Automated model retraining
-- Cloud deployment
-
----
-
-## ⚠️ Disclaimer
-
-This project is created for **educational and portfolio purposes**.
-
-The predictions should not be used as the sole basis for real-world financial or lending decisions. A production credit-risk system would require additional validation, fairness testing, security controls, regulatory compliance, and domain expertise.
-
----
-
-## 👨‍💻 Author
-
-### Harsh
-
-**B.Tech – Computer Science & Engineering**
-
-Aspiring **Data Scientist / Machine Learning Engineer**
-
-### 🔗 Connect With Me
-
-- 💻 GitHub: https://github.com/harshantla-cloud
-- 🔗 LinkedIn: https://www.linkedin.com/in/harsh-5694b13ab
-
----
-
-## ⭐ Support
-
-If you found this project useful, consider giving the repository a ⭐ on GitHub.
-
----
-
-### 💳 Credit Risk Modelling
-
-**Turning customer financial data into actionable credit-risk predictions using Machine Learning.**
+B.Tech – Computer Science & Engineering
