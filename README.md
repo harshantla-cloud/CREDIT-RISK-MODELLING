@@ -1,62 +1,63 @@
-# 💳 Credit Risk Modeling
+<div align="center">
 
-**An end-to-end machine learning system that classifies loan applicants as Good or Bad Credit Risk, deployed as an interactive Streamlit application.**
+# 💳 Credit Risk Modelling
 
-![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
+**An end-to-end machine learning system that classifies loan applicants as *Good* or *Bad* credit risk, served through an interactive Streamlit application.**
+
+[![GitHub Repo](https://img.shields.io/badge/GitHub-CREDIT--RISK--MODELLING-181717?logo=github&logoColor=white)](https://github.com/harshantla-cloud/CREDIT-RISK-MODELLING)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)
-![XGBoost](https://img.shields.io/badge/XGBoost-Model-informational)
-![Status](https://img.shields.io/badge/Status-Active-success)
+![XGBoost](https://img.shields.io/badge/XGBoost-Model-337AB7)
 
-## Overview
+[**🔗 Live Demo**](https://harsh-credit-risk.streamlit.app/) · [Application Preview](#️-application-preview) · [Results](#-results) · [Setup](#️-installation--setup)
 
-Lenders need a fast, consistent way to gauge how risky a loan applicant is before extending credit. This project builds a classification pipeline on the German Credit dataset that predicts whether an applicant represents a **Good** or **Bad** credit risk from their demographic and financial attributes, and exposes that model through a live Streamlit web app. It's aimed at recruiters and engineers who want to see a complete, reproducible ML workflow — from raw data to a deployed, user-facing prediction tool — rather than just a notebook.
+</div>
+
+---
+
+Lenders need a fast, consistent way to gauge the risk of a loan applicant before extending credit. This project trains and compares four classification models on the German Credit dataset to predict whether an applicant is a **Good** or **Bad** credit risk from demographic and financial attributes, and exposes the trained model through a Streamlit web app for instant predictions.
 
 ---
 
 ## 🚀 Project Overview
 
-**Problem:** Manually assessing an applicant's credit risk from raw financial and demographic data is slow and inconsistent.
-
-**Solution:** A trained classification model that takes applicant attributes (age, job, housing, savings, checking balance, credit amount, duration, purpose) and returns an instant Good/Bad risk prediction, served through a Streamlit interface.
-
-**Target users:** Recruiters and engineers evaluating this as a portfolio project; the app itself is designed as a demo of how such a system would work in a lending workflow.
-
-**Key value:** Turns a multi-step data science pipeline (cleaning → EDA → encoding → model selection → tuning) into a single-click prediction tool.
-
----
+| | |
+|---|---|
+| **Problem** | Assessing credit risk manually from raw applicant data is slow and inconsistent. |
+| **Solution** | A tuned tree-based classifier that takes nine applicant attributes and returns a Good/Bad risk verdict in real time. |
+| **Target users** | Loan officers / analysts (as a decision-support demo); recruiters and engineers reviewing this as a portfolio project. |
+| **Use case** | Pre-screening loan applications in a lending workflow. |
+| **Key value** | Packages a full pipeline (cleaning → EDA → encoding → model comparison → tuning → deployment) into a single-click prediction tool. |
 
 ## 🎯 Objectives
 
-- Clean and prepare the German Credit dataset for modeling
-- Explore the data to understand risk-driving factors
+- Clean and prepare the German Credit dataset for modelling
+- Explore the data to understand factors associated with credit risk
 - Encode categorical applicant attributes for machine learning
-- Train and compare multiple classification models
-- Select and serialize a final model for deployment
+- Train and compare multiple classification models with hyperparameter tuning
+- Serialize the final model and encoders for reuse
 - Provide an interactive Streamlit interface for real-time predictions
-
----
 
 ## ✨ Key Features
 
 ### Core Features
-- Data cleaning and missing-value handling on the German Credit dataset
-- Categorical feature encoding with persisted `LabelEncoder` objects per column
-- Multi-model training and comparison with hyperparameter tuning
+- Missing-value handling and cleaning of the German Credit dataset
+- Per-column `LabelEncoder` objects, persisted and reused at inference time
 
-### ML/AI Features
-- Four classification models evaluated: Decision Tree, Random Forest, Extra Trees, XGBoost
-- Hyperparameter search via `GridSearchCV` with 5-fold cross-validation
-- Serialized final model and encoders (`joblib`) loaded directly by the app
+### ML Features
+- Four classifiers compared: Decision Tree, Random Forest, Extra Trees, XGBoost
+- Hyperparameter search with `GridSearchCV` (5-fold cross-validation)
+- Model and encoders serialized with `joblib`
 
 ### User Interface Features
 - Two-column Streamlit form for applicant and loan details
-- Custom CSS styling with a background image, card layout, and color-coded result banner (green for Good Risk, red for Bad Risk)
+- Custom-styled UI: background image, card layout, and a colour-coded result banner (green = Good Risk, red = Bad Risk)
 
 ### Engineering Features
-- Clean separation of `data/`, `models/`, and `encoders/` artifacts
-- Reproducible pipeline notebook (`analysis_model.ipynb`) covering the full workflow
-- Version-controlled with Git
+- Artifacts separated into `data/`, `models/`, and `encoders/`
+- Full reproducible workflow in a single notebook (`analysis_model.ipynb`)
+- Publicly deployed on Streamlit Community Cloud
 
 ---
 
@@ -66,17 +67,19 @@ Lenders need a fast, consistent way to gauge how risky a loan applicant is befor
 flowchart TD
     A[User] --> B[Streamlit App - app.py]
     B --> C[Applicant Input Form]
-    C --> D[Per-Column Encoders - encoders/*.pkl]
-    D --> E[Serialized Extra Trees Model - models/extra_tress_credit_model.pkl]
+    C --> D[Categorical Encoding<br/>encoders/*.pkl]
+    D --> E[Extra Trees Model<br/>models/extra_tress_credit_model.pkl]
     E --> F[Risk Prediction]
-    F --> G[Styled Result Card - Good / Bad Risk]
+    F --> G[Styled Result Card<br/>Good / Bad Risk]
 ```
 
-- **Streamlit App (`app.py`):** Renders the UI, applies custom styling, and orchestrates encoding + prediction.
-- **Applicant Input Form:** Collects age, sex, job, housing, savings, checking account, credit amount, duration, and purpose.
-- **Encoders:** Five saved `LabelEncoder` objects (`Sex`, `Housing`, `Saving accounts`, `Checking account`, `Purpose`) transform categorical inputs into the numeric format the model expects.
-- **Model:** A pre-trained Extra Trees classifier (`extra_tress_credit_model.pkl`) makes the prediction.
-- **Result Card:** Displays a color-coded verdict directly in the app.
+| Component | Description |
+|---|---|
+| **Streamlit App (`app.py`)** | Renders the UI, applies custom CSS, and orchestrates encoding and prediction. |
+| **Input Form** | Collects age, sex, job, housing, saving account, checking account, credit amount, duration, and loan purpose. |
+| **Encoders** | Five saved `LabelEncoder` objects (`Sex`, `Housing`, `Saving accounts`, `Checking account`, `Purpose`) convert categorical inputs to the numeric format the model was trained on. |
+| **Model** | Pre-trained Extra Trees classifier loaded with `joblib`; `Age`, `Job`, `Credit amount`, and `Duration` are passed as numeric values. |
+| **Result Card** | Displays a green "Good Credit Risk" or red "Bad Credit Risk" banner. |
 
 ---
 
@@ -84,15 +87,15 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[German Credit Dataset - 1000 records] --> B[Missing Value Handling]
+    A[German Credit Dataset<br/>1,000 records] --> B[Missing Value Handling]
     B --> C[Drop Unused Column]
     C --> D[Exploratory Data Analysis]
-    D --> E[Categorical Label Encoding]
-    E --> F[Train-Test Split - 80/20]
-    F --> G[Model Training - 4 models]
-    G --> H[Hyperparameter Tuning - GridSearchCV]
-    H --> I[Model Comparison by Accuracy]
-    I --> J[Model + Encoder Serialization]
+    D --> E[Label Encoding]
+    E --> F[Train-Test Split 80/20]
+    F --> G[Train 4 Models]
+    G --> H[GridSearchCV Tuning]
+    H --> I[Accuracy Comparison]
+    I --> J[Serialize Model + Encoders]
     J --> K[Streamlit Application]
     K --> L[Real-Time Prediction]
 ```
@@ -101,18 +104,20 @@ flowchart TD
 
 ## 🧠 Machine Learning Pipeline
 
-1. **Dataset:** German Credit dataset (1,000 raw records, 11 columns)
-2. **Features:** `Age`, `Sex`, `Job`, `Housing`, `Saving accounts`, `Checking account`, `Credit amount`, `Duration`, `Purpose`
-3. **Target variable:** `Risk` (`good` / `bad`)
-4. **Preprocessing:** Dropped rows with missing `Saving accounts` / `Checking account` values; removed the unused index column
-5. **Encoding:** `LabelEncoder` applied to all categorical features and the target, each encoder saved individually
-6. **Feature engineering:** None beyond encoding — the nine raw attributes are used directly
-7. **Train/Test split:** 80/20 stratified split (417 train / 105 test samples)
-8. **Models trained:** Decision Tree, Random Forest, Extra Trees, XGBoost
-9. **Evaluation metric:** Accuracy on the held-out test set
-10. **Model selection:** Extra Trees was tuned and serialized as the model used by the app (see note in [Models Used](#-models-used) on how it compares to XGBoost)
-11. **Serialization:** Final model and all encoders saved with `joblib`
-12. **Prediction pipeline:** App inputs → per-column encoding → model inference → risk label
+| Stage | Detail |
+|---|---|
+| **Dataset** | German Credit dataset — 1,000 raw records, 11 columns (`data/german_credit_data.csv`) |
+| **Features** | `Age`, `Sex`, `Job`, `Housing`, `Saving accounts`, `Checking account`, `Credit amount`, `Duration`, `Purpose` |
+| **Target** | `Risk` (`good` / `bad`) |
+| **Preprocessing** | Dropped rows with missing `Saving accounts` / `Checking account`; removed the unused index column |
+| **Encoding** | `LabelEncoder` on categorical features and target; each encoder saved individually |
+| **Feature engineering** | None beyond encoding — the nine raw attributes are used directly |
+| **Train/Test split** | 80/20 split (417 train / 105 test samples) |
+| **Models** | Decision Tree, Random Forest, Extra Trees, XGBoost |
+| **Tuning** | `GridSearchCV`, 5-fold CV, accuracy scoring |
+| **Evaluation metric** | Accuracy on the held-out test set |
+| **Serialization** | `joblib` (model + encoders) |
+| **Inference** | Form inputs → per-column encoding → model prediction → risk label |
 
 ```mermaid
 flowchart LR
@@ -121,7 +126,7 @@ flowchart LR
     C --> D[GridSearchCV Tuning]
     D --> E[Best Estimator per Model]
     E --> F[Accuracy Comparison]
-    F --> G[Final Model: Extra Trees]
+    F --> G[Extra Trees serialized for the app]
 ```
 
 ---
@@ -130,25 +135,23 @@ flowchart LR
 
 | Model | Purpose | Evaluation Metric | Result |
 |---|---|---|---|
-| Decision Tree | Baseline classifier | Test Accuracy | 59.05% |
-| Random Forest | Ensemble comparison | Test Accuracy | 63.81% |
-| **Extra Trees** | **Final deployed model** | **Test Accuracy** | **65.71%** |
-| XGBoost | Ensemble comparison | Test Accuracy | 73.33% |
+| Decision Tree | Baseline classifier | Test accuracy | 59.05% |
+| Random Forest | Ensemble comparison | Test accuracy | 63.81% |
+| **Extra Trees** | **Model deployed in the app** | Test accuracy | **65.71%** |
+| XGBoost | Ensemble comparison | Test accuracy | 73.33% |
 
-**Note:** XGBoost scored highest on test accuracy (73.33%) in the comparison, but the model serialized and loaded by the Streamlit app is Extra Trees (65.71%). The notebook does not document a stated reason for this choice — flagged here rather than assumed, and a clear candidate for the [Future Improvements](#-future-improvements) list.
-
-All models were tuned with `GridSearchCV` (5-fold cross-validation, scoring on accuracy).
+> **Model selection note:** XGBoost achieved the highest test accuracy (73.33%), but the model serialized and loaded by the app is Extra Trees (65.71%). The notebook does not document a reason for this choice, so none is claimed here. Switching the deployed model to XGBoost is listed under [Future Improvements](#-future-improvements).
 
 ---
 
 ## 📊 Exploratory Data Analysis
 
-- **Dataset size:** 1,000 original records → 522 after dropping rows with missing `Saving accounts` or `Checking account` values
-- **Class balance (post-cleaning):** Good Risk 291 / Bad Risk 231 (≈55.7% / 44.3%)
-- **Numerical features examined:** `Age`, `Credit amount`, `Duration` — distributions and boxplots reviewed, including applicants with `Duration >= 60` months as outliers
-- **Correlation:** `Credit amount` and `Duration` show the strongest correlation among numeric features (0.61); `Age` correlates weakly with the others
-- **Business-level patterns:** Average `Credit amount` rises with `Job` category and is higher for male applicants than female applicants in this dataset; bad-risk applicants have on average higher `Credit amount` and longer `Duration` than good-risk applicants
-- **Categorical breakdowns:** `Sex`, `Job`, `Housing`, `Saving accounts`, `Checking account`, and `Purpose` were each plotted against `Risk` to inspect class patterns
+- **Dataset size:** 1,000 records → 522 after dropping rows with missing `Saving accounts` or `Checking account`
+- **Class balance (after cleaning):** Good 291 / Bad 231 (≈ 55.7% / 44.3%)
+- **Numeric features examined:** `Age`, `Credit amount`, `Duration` — distributions and boxplots, with applicants at `Duration ≥ 60` months treated as outliers
+- **Correlation:** `Credit amount` and `Duration` are the most strongly correlated numeric pair (0.61); `Age` is weakly correlated with both
+- **Patterns observed:** Average `Credit amount` rises with `Job` category and is higher for male than female applicants in this dataset; bad-risk applicants have, on average, higher `Credit amount` and longer `Duration`
+- **Categorical breakdowns:** `Sex`, `Job`, `Housing`, `Saving accounts`, `Checking account`, and `Purpose` each plotted against `Risk`
 
 ---
 
@@ -156,23 +159,34 @@ All models were tuned with `GridSearchCV` (5-fold cross-validation, scoring on a
 
 ### Home / Input Interface
 ![Credit Risk Prediction App](Project%20Images/App%20Dashboard%20Image.jpg)
-Two-column form for entering applicant details and loan details, styled with a dark themed background.
+
+*Two-column form for applicant and loan details on a dark themed background.*
 
 ### Good Credit Risk Result
 ![Good Credit Risk](Project%20Images/Good%20Credit%20Risk.jpg)
-Green result card shown when the model predicts a lower-risk applicant.
+
+*Green result card shown when the model predicts a lower-risk applicant.*
 
 ### Bad Credit Risk Result
 ![Bad Credit Risk](Project%20Images/Bad%20Credit%20Risk.jpg)
-Red result card shown when the model predicts a higher-risk applicant.
+
+*Red result card shown when the model predicts a higher-risk applicant.*
 
 ---
 
 ## 📈 Results
 
-- Four classification models were trained and tuned under identical cross-validation settings for a fair comparison.
-- XGBoost achieved the highest held-out accuracy (73.33%); Extra Trees (65.71%) is the model currently wired into the deployed app.
-- Predictions are returned instantly through the Streamlit interface with a clear visual (green/red) verdict, making the output usable by a non-technical end user.
+| Model | Test Accuracy |
+|---|---|
+| Decision Tree | 59.05% |
+| Random Forest | 63.81% |
+| Extra Trees *(deployed)* | 65.71% |
+| **XGBoost** *(best in comparison)* | **73.33%** |
+
+- All four models were tuned under identical cross-validation settings (`GridSearchCV`, 5-fold).
+- The held-out test set is small (105 samples), so differences of a few points should be interpreted cautiously.
+- Only accuracy is reported; precision, recall, F1, and ROC-AUC are not part of the current evaluation.
+- The app returns a binary verdict instantly, with a colour-coded output usable by a non-technical user.
 
 ---
 
@@ -187,26 +201,28 @@ Red result card shown when the model predicts a higher-risk applicant.
 | Frontend | Streamlit |
 | Model Persistence | Joblib |
 | Development | Jupyter Notebook |
+| Deployment | Streamlit Community Cloud |
 | Version Control | Git / GitHub |
 
 ---
 
 ## 📁 Project Structure
 
-```text
-Credit Risk Modeling/
+```
+CREDIT-RISK-MODELLING/
 │
-├── app.py                          # Streamlit application
-├── analysis_model.ipynb            # Full data prep, EDA, and modeling pipeline
-├── requirements.txt                # Python dependencies
+├── app.py                              # Streamlit application
+├── analysis_model.ipynb                # Data prep, EDA, modelling, tuning
+├── requirements.txt                    # Python dependencies
+├── README.md
 │
 ├── data/
-│   └── german_credit_data.csv      # German Credit dataset
+│   └── german_credit_data.csv          # German Credit dataset
 │
 ├── models/
-│   └── extra_tress_credit_model.pkl  # Serialized final model
+│   └── extra_tress_credit_model.pkl    # Serialized Extra Trees model
 │
-├── encoders/
+├── encoders/                           # Fitted LabelEncoders (.pkl)
 │   ├── Sex_encoder.pkl
 │   ├── Housing_encoder.pkl
 │   ├── Saving accounts_encoder.pkl
@@ -214,14 +230,7 @@ Credit Risk Modeling/
 │   ├── Purpose_encoder.pkl
 │   └── target_encoder.pkl
 │
-└── Project Images/                 # Screenshots used in this README
-    ├── App Dashboard Image.jpg
-    ├── Bad Credit Risk.jpg
-    ├── Good Credit Risk.jpg
-    ├── credit_risk_background.webp.webp
-    ├── Project Structure Credit Risk Pipeline.png
-    ├── PROJECT STRUCTURE IMAGE.png
-    └── WORK FLOW OF PROJECT.png
+└── Project Images/                     # Screenshots and app background
 ```
 
 ---
@@ -229,65 +238,55 @@ Credit Risk Modeling/
 ## ⚙️ Installation & Setup
 
 ### Clone Repository
-
 ```bash
 git clone https://github.com/harshantla-cloud/CREDIT-RISK-MODELLING.git
 cd CREDIT-RISK-MODELLING
 ```
 
-### Create Virtual Environment
-
+### Create and Activate a Virtual Environment
 ```bash
 python -m venv venv
-```
 
-### Activate Environment
-
-**Windows**
-```bash
+# Windows
 venv\Scripts\activate
-```
 
-**Linux/macOS**
-```bash
+# Linux / macOS
 source venv/bin/activate
 ```
 
 ### Install Dependencies
-
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Run the App
-
 ```bash
 streamlit run app.py
 ```
 
----
-
-## Live Demo
-
-[Credit Risk Modeling — Live Demo](https://harsh-credit-risk.streamlit.app/)
+The app opens at `http://localhost:8501`. A hosted version is available at the [live demo](https://harsh-credit-risk.streamlit.app/).
 
 ---
+
+## ⚠️ Limitations
+
+- Trained on a small dataset (522 records after cleaning); the model is a demonstration, not a production lending system.
+- The `Job` field is entered as the dataset's numeric code (0–3) in the UI.
+- The deployed model is not the highest-scoring model in the comparison.
 
 ## 🔮 Future Improvements
 
-- Resolve the model-selection gap by deploying XGBoost (higher test accuracy) or documenting why Extra Trees was chosen instead
+- Deploy XGBoost (highest test accuracy) or document why Extra Trees is preferred
+- Add precision, recall, F1, and ROC-AUC alongside accuracy
 - Add model explainability (e.g. SHAP or feature importance) to the app
-- Report additional evaluation metrics (precision, recall, F1, ROC-AUC) alongside accuracy
-- Add input validation and error handling in the Streamlit form
-- Add automated tests and a CI pipeline
+- Replace the numeric `Job` input with descriptive labels
+- Add input validation, automated tests, and a CI pipeline
 
 ---
 
-## Author
+## 👤 Author
 
-**Harsh**
-B.Tech, Computer Science & Engineering (2023–2027)
+**Harsh** — B.Tech, Computer Science & Engineering (2023–2027)
 Focus: Data Science, Machine Learning, AI, Deep Learning
 
-[GitHub](https://github.com/harshantla-cloud) · [LinkedIn](https://linkedin.com/in/harsh-5694b13ab) 
-[Live Demo](https://harsh-credit-risk.streamlit.app/)
+[GitHub](https://github.com/harshantla-cloud) · [LinkedIn](https://linkedin.com/in/harsh-5694b13ab) · [Live Demo](https://harsh-credit-risk.streamlit.app/)
