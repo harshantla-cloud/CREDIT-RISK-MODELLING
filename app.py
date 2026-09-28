@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import base64
 import os
 
 
@@ -18,6 +17,17 @@ st.set_page_config(
 
 
 # =========================================================
+# BASE DIRECTORY
+# =========================================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def get_path(*parts):
+    return os.path.join(BASE_DIR, *parts)
+
+
+# =========================================================
 # CUSTOM CSS
 # =========================================================
 
@@ -25,13 +35,23 @@ st.markdown(
     """
     <style>
 
-    /* ================= GLOBAL ================= */
-
     .stApp {
         background:
-            radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.18), transparent 28%),
-            radial-gradient(circle at 90% 15%, rgba(124, 58, 237, 0.15), transparent 30%),
-            radial-gradient(circle at 50% 90%, rgba(6, 182, 212, 0.10), transparent 30%),
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(37, 99, 235, 0.18),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 90% 15%,
+                rgba(124, 58, 237, 0.15),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 50% 90%,
+                rgba(6, 182, 212, 0.10),
+                transparent 30%
+            ),
             #0B1220;
         color: #F8FAFC;
     }
@@ -44,11 +64,12 @@ st.markdown(
         color: #F8FAFC !important;
     }
 
-    p, label, span {
+    p, label {
         color: #CBD5E1;
     }
 
-    /* ================= HEADER ================= */
+
+    /* ================= HERO ================= */
 
     .hero {
         padding: 32px;
@@ -65,7 +86,9 @@ st.markdown(
             #111827;
 
         border: 1px solid rgba(255,255,255,0.10);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.30);
+
+        box-shadow:
+            0 20px 50px rgba(0,0,0,0.30);
     }
 
     .hero-title {
@@ -82,6 +105,7 @@ st.markdown(
         margin-bottom: 20px;
     }
 
+
     /* ================= BADGES ================= */
 
     .badge-container {
@@ -96,12 +120,15 @@ st.markdown(
         border-radius: 999px;
 
         background: rgba(37,99,235,0.15);
+
         border: 1px solid rgba(37,99,235,0.35);
 
         color: #93C5FD !important;
+
         font-size: 13px;
         font-weight: 600;
     }
+
 
     /* ================= CARDS ================= */
 
@@ -133,10 +160,12 @@ st.markdown(
 
     .card-description {
         font-size: 13px;
+
         color: #94A3B8 !important;
 
         margin-bottom: 18px;
     }
+
 
     /* ================= INPUTS ================= */
 
@@ -159,13 +188,14 @@ st.markdown(
         color: #F8FAFC !important;
     }
 
+
     /* ================= BUTTON ================= */
 
     div.stButton > button {
 
         width: 100%;
 
-        height: 54px;
+        min-height: 54px;
 
         border: none;
 
@@ -197,6 +227,7 @@ st.markdown(
         box-shadow:
             0 15px 35px rgba(37,99,235,0.40);
     }
+
 
     /* ================= RESULT ================= */
 
@@ -265,6 +296,7 @@ st.markdown(
         color: #CBD5E1 !important;
     }
 
+
     /* ================= INFO CARDS ================= */
 
     .info-card {
@@ -305,6 +337,7 @@ st.markdown(
         margin-top: 5px;
     }
 
+
     /* ================= PIPELINE ================= */
 
     .pipeline {
@@ -340,15 +373,6 @@ st.markdown(
         color: #CBD5E1 !important;
     }
 
-    /* ================= DIVIDER ================= */
-
-    hr {
-
-        border: none;
-
-        border-top:
-            1px solid rgba(255,255,255,0.08);
-    }
 
     /* ================= FOOTER ================= */
 
@@ -367,6 +391,7 @@ st.markdown(
         color: #94A3B8 !important;
     }
 
+
     /* ================= SIDEBAR ================= */
 
     section[data-testid="stSidebar"] {
@@ -376,6 +401,7 @@ st.markdown(
         border-right:
             1px solid rgba(255,255,255,0.08);
     }
+
 
     /* ================= MOBILE ================= */
 
@@ -401,39 +427,87 @@ st.markdown(
 
 
 # =========================================================
-# MODEL
-# EXACT ORIGINAL MODEL + ENCODERS
+# MODEL + ENCODERS
 # =========================================================
 
-model = joblib.load(
-    "models/extra_tress_credit_model.pkl"
+MODEL_PATH = get_path(
+    "models",
+    "extra_tress_credit_model.pkl"
 )
 
-encoders = {
-    "Sex": joblib.load(
-        "encoders/Sex_encoder.pkl"
+ENCODER_PATHS = {
+    "Sex": get_path(
+        "encoders",
+        "Sex_encoder.pkl"
     ),
 
-    "Housing": joblib.load(
-        "encoders/Housing_encoder.pkl"
+    "Housing": get_path(
+        "encoders",
+        "Housing_encoder.pkl"
     ),
 
-    "Saving accounts": joblib.load(
-        "encoders/Saving accounts_encoder.pkl"
+    "Saving accounts": get_path(
+        "encoders",
+        "Saving accounts_encoder.pkl"
     ),
 
-    "Checking account": joblib.load(
-        "encoders/Checking account_encoder.pkl"
+    "Checking account": get_path(
+        "encoders",
+        "Checking account_encoder.pkl"
     ),
 
-    "Purpose": joblib.load(
-        "encoders/Purpose_encoder.pkl"
+    "Purpose": get_path(
+        "encoders",
+        "Purpose_encoder.pkl"
     )
 }
 
 
 # =========================================================
-# HERO SECTION
+# SAFE MODEL LOADING
+# =========================================================
+
+try:
+
+    model = joblib.load(MODEL_PATH)
+
+    encoders = {
+        name: joblib.load(path)
+        for name, path in ENCODER_PATHS.items()
+    }
+
+except FileNotFoundError as e:
+
+    st.error(
+        "Model or encoder file was not found."
+    )
+
+    st.code(
+        str(e)
+    )
+
+    st.info(
+        "Make sure the models and encoders folders are present "
+        "in the GitHub repository."
+    )
+
+    st.stop()
+
+except Exception as e:
+
+    st.error(
+        "Unable to load the machine learning model."
+    )
+
+    st.code(
+        str(e)
+    )
+
+    st.stop()
+
+
+# =========================================================
+# HERO
 # =========================================================
 
 st.markdown(
@@ -465,12 +539,14 @@ st.markdown(
 
 
 # =========================================================
-# TOP INFORMATION CARDS
+# INFORMATION CARDS
 # =========================================================
 
 info1, info2, info3, info4 = st.columns(4)
 
+
 with info1:
+
     st.markdown(
         """
         <div class="info-card">
@@ -494,6 +570,7 @@ with info1:
 
 
 with info2:
+
     st.markdown(
         """
         <div class="info-card">
@@ -517,6 +594,7 @@ with info2:
 
 
 with info3:
+
     st.markdown(
         """
         <div class="info-card">
@@ -540,6 +618,7 @@ with info3:
 
 
 with info4:
+
     st.markdown(
         """
         <div class="info-card">
@@ -567,7 +646,7 @@ st.write("")
 
 
 # =========================================================
-# MAIN INPUT SECTION
+# INPUT SECTION
 # =========================================================
 
 left_col, right_col = st.columns(
@@ -601,9 +680,9 @@ with left_col:
 
     age = st.number_input(
         "Age",
-        18,
-        80,
-        30
+        min_value=18,
+        max_value=80,
+        value=30
     )
 
     sex = st.selectbox(
@@ -678,21 +757,21 @@ with right_col:
 
     credit = st.number_input(
         "Credit Amount",
-        0,
-        100000,
-        1000
+        min_value=0,
+        max_value=100000,
+        value=1000
     )
 
     duration = st.number_input(
         "Duration (Months)",
-        1,
-        72,
-        12
+        min_value=1,
+        max_value=72,
+        value=12
     )
 
 
 # =========================================================
-# PURPOSE
+# LOAN PURPOSE
 # =========================================================
 
 st.markdown(
@@ -740,6 +819,7 @@ predict_col1, predict_col2, predict_col3 = st.columns(
     [1, 2, 1]
 )
 
+
 with predict_col2:
 
     predict_button = st.button(
@@ -750,97 +830,108 @@ with predict_col2:
 
 # =========================================================
 # PREDICTION
-# EXACT ORIGINAL ML LOGIC
 # =========================================================
 
 if predict_button:
 
-    data = pd.DataFrame({
-        "Age": [age],
+    try:
 
-        "Sex": [
-            encoders["Sex"].transform([sex])[0]
-        ],
+        data = pd.DataFrame({
+            "Age": [age],
 
-        "Job": [job],
+            "Sex": [
+                encoders["Sex"].transform([sex])[0]
+            ],
 
-        "Housing": [
-            encoders["Housing"].transform([housing])[0]
-        ],
+            "Job": [job],
 
-        "Saving accounts": [
-            encoders["Saving accounts"].transform([saving])[0]
-        ],
+            "Housing": [
+                encoders["Housing"].transform([housing])[0]
+            ],
 
-        "Checking account": [
-            encoders["Checking account"].transform([checking])[0]
-        ],
+            "Saving accounts": [
+                encoders["Saving accounts"].transform([saving])[0]
+            ],
 
-        "Credit amount": [credit],
+            "Checking account": [
+                encoders["Checking account"].transform([checking])[0]
+            ],
 
-        "Duration": [duration],
+            "Credit amount": [credit],
 
-        "Purpose": [
-            encoders["Purpose"].transform([purpose])[0]
-        ]
-    })
+            "Duration": [duration],
 
-    prediction = model.predict(data)[0]
+            "Purpose": [
+                encoders["Purpose"].transform([purpose])[0]
+            ]
+        })
+
+        prediction = model.predict(data)[0]
 
 
-    # =====================================================
-    # GOOD CREDIT RISK
-    # =====================================================
+        # =================================================
+        # GOOD CREDIT RISK
+        # =================================================
 
-    if prediction == 1:
+        if prediction == 1:
 
-        st.markdown(
-            """
-            <div class="result-good">
+            st.markdown(
+                """
+                <div class="result-good">
 
-                <div class="result-icon">
-                    🟢
+                    <div class="result-icon">
+                        🟢
+                    </div>
+
+                    <div class="result-title">
+                        GOOD CREDIT RISK
+                    </div>
+
+                    <div class="result-text">
+                        Applicant shows a lower credit risk.
+                    </div>
+
                 </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-                <div class="result-title">
-                    GOOD CREDIT RISK
+
+        # =================================================
+        # BAD CREDIT RISK
+        # =================================================
+
+        else:
+
+            st.markdown(
+                """
+                <div class="result-bad">
+
+                    <div class="result-icon">
+                        🔴
+                    </div>
+
+                    <div class="result-title">
+                        BAD CREDIT RISK
+                    </div>
+
+                    <div class="result-text">
+                        Applicant shows a higher credit risk.
+                    </div>
+
                 </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-                <div class="result-text">
-                    Applicant shows a lower credit risk.
-                </div>
+    except Exception as e:
 
-            </div>
-            """,
-            unsafe_allow_html=True
+        st.error(
+            "Prediction failed."
         )
 
-
-    # =====================================================
-    # BAD CREDIT RISK
-    # =====================================================
-
-    else:
-
-        st.markdown(
-            """
-            <div class="result-bad">
-
-                <div class="result-icon">
-                    🔴
-                </div>
-
-                <div class="result-title">
-                    BAD CREDIT RISK
-                </div>
-
-                <div class="result-text">
-                    Applicant shows a higher credit risk.
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
+        st.code(
+            str(e)
         )
 
 
@@ -852,7 +943,9 @@ st.write("")
 st.write("")
 
 
-with st.expander("⚙️ How This Credit Risk System Works"):
+with st.expander(
+    "⚙️ How This Credit Risk System Works"
+):
 
     st.markdown(
         """
@@ -865,14 +958,13 @@ with st.expander("⚙️ How This Credit Risk System Works"):
 
             <div class="pipeline-step">
                 <strong>2️⃣ Categorical Encoding</strong><br>
-                Categorical values such as Sex, Housing, Saving Account,
-                Checking Account and Purpose are transformed using the
-                existing encoders.
+                Categorical applicant information is transformed using
+                the trained encoders.
             </div>
 
             <div class="pipeline-step">
                 <strong>3️⃣ Feature DataFrame</strong><br>
-                The processed values are assembled into the same feature
+                The processed values are assembled into the feature
                 structure expected by the trained model.
             </div>
 
@@ -896,7 +988,9 @@ with st.expander("⚙️ How This Credit Risk System Works"):
 # MODEL INFORMATION
 # =========================================================
 
-with st.expander("🤖 About the Machine Learning Model"):
+with st.expander(
+    "🤖 About the Machine Learning Model"
+):
 
     st.markdown(
         """
@@ -934,7 +1028,7 @@ st.markdown(
 
         <br><br>
 
-        Built & Deployed by Harsh Antla
+        Built &amp; Deployed by Harsh Antla
 
     </div>
     """,
