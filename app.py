@@ -1,164 +1,942 @@
-```python
-import os
-import base64
-
 import streamlit as st
 import pandas as pd
 import joblib
+import base64
+import os
 
 
-# ============================================================
-# PAGE CONFIGURATION
-# ============================================================
+# =========================================================
+# PAGE CONFIG
+# =========================================================
+
 st.set_page_config(
-    page_title="Credit Risk Intelligence",
+    page_title="Credit Risk Prediction",
     page_icon="💳",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed"
 )
 
 
-# ============================================================
-# PREMIUM UI STYLING
-# ============================================================
-def load_background(path):
-    """
-    Loads the existing project background image if available.
-    The original project path is preserved.
-    """
-    if not os.path.exists(path):
-        return ""
-
-    with open(path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-
-background_image = load_background(
-    "Project Images/credit_risk_background.webp.webp"
-)
-
-
-background_css = ""
-
-if background_image:
-    background_css = f"""
-    .stApp {{
-        background:
-            linear-gradient(
-                135deg,
-                rgba(11, 18, 32, 0.96),
-                rgba(17, 24, 39, 0.93)
-            ),
-            url("data:image/webp;base64,{background_image}");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }}
-    """
-
-else:
-    background_css = """
-    .stApp {
-        background:
-            radial-gradient(
-                circle at 10% 10%,
-                rgba(37, 99, 235, 0.14),
-                transparent 28%
-            ),
-            radial-gradient(
-                circle at 90% 20%,
-                rgba(124, 58, 237, 0.12),
-                transparent 28%
-            ),
-            linear-gradient(
-                135deg,
-                #0B1220 0%,
-                #111827 50%,
-                #0B1220 100%
-            );
-    }
-    """
-
+# =========================================================
+# CUSTOM CSS
+# =========================================================
 
 st.markdown(
-    f"""
+    """
     <style>
 
-    /* ========================================================
-       GLOBAL
-       ======================================================== */
+    /* ================= GLOBAL ================= */
 
-    {background_css}
-
-    .stApp {{
-        color: #F8FAFC;
-    }}
-
-    .main .block-container {{
-        max-width: 1400px;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }}
-
-    h1, h2, h3, h4, h5, h6 {{
-        color: #F8FAFC !important;
-        letter-spacing: -0.02em;
-    }}
-
-    p, label, span {{
-        color: #CBD5E1;
-    }}
-
-    /* ========================================================
-       SIDEBAR
-       ======================================================== */
-
-    section[data-testid="stSidebar"] {{
+    .stApp {
         background:
-            linear-gradient(
-                180deg,
-                #0B1220 0%,
-                #111827 55%,
-                #0B1220 100%
-            );
-        border-right: 1px solid rgba(148, 163, 184, 0.12);
-    }}
+            radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.18), transparent 28%),
+            radial-gradient(circle at 90% 15%, rgba(124, 58, 237, 0.15), transparent 30%),
+            radial-gradient(circle at 50% 90%, rgba(6, 182, 212, 0.10), transparent 30%),
+            #0B1220;
+        color: #F8FAFC;
+    }
 
-    section[data-testid="stSidebar"] > div {{
-        padding-top: 1.5rem;
-    }}
+    .main {
+        padding-top: 1rem;
+    }
 
-    .sidebar-brand {{
-        padding: 18px;
-        border-radius: 18px;
+    h1, h2, h3, h4, h5, h6 {
+        color: #F8FAFC !important;
+    }
+
+    p, label, span {
+        color: #CBD5E1;
+    }
+
+    /* ================= HEADER ================= */
+
+    .hero {
+        padding: 32px;
+        border-radius: 24px;
+        margin-bottom: 25px;
+
         background:
             linear-gradient(
                 135deg,
-                rgba(37, 99, 235, 0.18),
-                rgba(124, 58, 237, 0.14)
-            );
-        border: 1px solid rgba(96, 165, 250, 0.18);
+                rgba(37, 99, 235, 0.22),
+                rgba(124, 58, 237, 0.18),
+                rgba(6, 182, 212, 0.12)
+            ),
+            #111827;
+
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.30);
+    }
+
+    .hero-title {
+        font-size: 42px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 8px;
+        color: #FFFFFF !important;
+    }
+
+    .hero-subtitle {
+        font-size: 17px;
+        color: #CBD5E1 !important;
         margin-bottom: 20px;
-    }}
+    }
 
-    .sidebar-brand-title {{
-        font-size: 20px;
-        font-weight: 800;
-        color: #F8FAFC;
-        margin-bottom: 5px;
-    }}
+    /* ================= BADGES ================= */
 
-    .sidebar-brand-subtitle {{
+    .badge-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 7px 13px;
+        border-radius: 999px;
+
+        background: rgba(37,99,235,0.15);
+        border: 1px solid rgba(37,99,235,0.35);
+
+        color: #93C5FD !important;
         font-size: 13px;
-        color: #94A3B8;
-        line-height: 1.5;
-    }}
+        font-weight: 600;
+    }
 
-    .sidebar-section {{
-        color: #64748B;
-        text-transform: uppercase;
-        font-size: 11px;
+    /* ================= CARDS ================= */
+
+    .card {
+        background: rgba(17, 24, 39, 0.88);
+
+        border: 1px solid rgba(255,255,255,0.08);
+
+        border-radius: 20px;
+
+        padding: 24px;
+
+        margin-bottom: 20px;
+
+        box-shadow:
+            0 15px 40px rgba(0,0,0,0.22);
+
+        backdrop-filter: blur(12px);
+    }
+
+    .card-title {
+        font-size: 21px;
+        font-weight: 750;
+
+        color: #FFFFFF !important;
+
+        margin-bottom: 5px;
+    }
+
+    .card-description {
+        font-size: 13px;
+        color: #94A3B8 !important;
+
+        margin-bottom: 18px;
+    }
+
+    /* ================= INPUTS ================= */
+
+    div[data-baseweb="input"] > div,
+    div[data-baseweb="select"] > div {
+
+        background-color: #111827 !important;
+
+        border:
+            1px solid rgba(255,255,255,0.10) !important;
+
+        border-radius: 11px !important;
+    }
+
+    input {
+        color: #F8FAFC !important;
+    }
+
+    div[data-baseweb="select"] span {
+        color: #F8FAFC !important;
+    }
+
+    /* ================= BUTTON ================= */
+
+    div.stButton > button {
+
+        width: 100%;
+
+        height: 54px;
+
+        border: none;
+
+        border-radius: 14px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #2563EB,
+                #7C3AED
+            );
+
+        color: white;
+
+        font-size: 17px;
+
+        font-weight: 750;
+
+        box-shadow:
+            0 10px 30px rgba(37,99,235,0.25);
+
+        transition: all 0.25s ease;
+    }
+
+    div.stButton > button:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 15px 35px rgba(37,99,235,0.40);
+    }
+
+    /* ================= RESULT ================= */
+
+    .result-good {
+
+        padding: 30px;
+
+        border-radius: 20px;
+
+        text-align: center;
+
+        margin-top: 25px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(16,185,129,0.18),
+                rgba(6,182,212,0.08)
+            );
+
+        border:
+            1px solid rgba(16,185,129,0.45);
+
+        box-shadow:
+            0 15px 40px rgba(16,185,129,0.10);
+    }
+
+    .result-bad {
+
+        padding: 30px;
+
+        border-radius: 20px;
+
+        text-align: center;
+
+        margin-top: 25px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239,68,68,0.18),
+                rgba(245,158,11,0.08)
+            );
+
+        border:
+            1px solid rgba(239,68,68,0.45);
+
+        box-shadow:
+            0 15px 40px rgba(239,68,68,0.10);
+    }
+
+    .result-icon {
+        font-size: 42px;
+        margin-bottom: 8px;
+    }
+
+    .result-title {
+        font-size: 28px;
         font-weight: 800;
-        letter-spacing: 0.12em;
-        margin: 24px 0 10
-```
+        margin-bottom: 8px;
+        color: #FFFFFF !important;
+    }
+
+    .result-text {
+        font-size: 14px;
+        color: #CBD5E1 !important;
+    }
+
+    /* ================= INFO CARDS ================= */
+
+    .info-card {
+
+        background: #111827;
+
+        border:
+            1px solid rgba(255,255,255,0.08);
+
+        border-radius: 16px;
+
+        padding: 18px;
+
+        height: 100%;
+    }
+
+    .info-number {
+        font-size: 26px;
+        font-weight: 800;
+
+        color: #60A5FA !important;
+    }
+
+    .info-title {
+        font-size: 14px;
+        font-weight: 700;
+
+        color: #F8FAFC !important;
+
+        margin-top: 4px;
+    }
+
+    .info-text {
+        font-size: 12px;
+
+        color: #94A3B8 !important;
+
+        margin-top: 5px;
+    }
+
+    /* ================= PIPELINE ================= */
+
+    .pipeline {
+
+        padding: 20px;
+
+        border-radius: 18px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(37,99,235,0.10),
+                rgba(124,58,237,0.08)
+            );
+
+        border:
+            1px solid rgba(255,255,255,0.08);
+    }
+
+    .pipeline-step {
+
+        padding: 13px 16px;
+
+        margin: 8px 0;
+
+        border-radius: 12px;
+
+        background: rgba(17,24,39,0.85);
+
+        border:
+            1px solid rgba(255,255,255,0.06);
+
+        color: #CBD5E1 !important;
+    }
+
+    /* ================= DIVIDER ================= */
+
+    hr {
+
+        border: none;
+
+        border-top:
+            1px solid rgba(255,255,255,0.08);
+    }
+
+    /* ================= FOOTER ================= */
+
+    .footer {
+
+        text-align: center;
+
+        padding: 30px 10px 15px;
+
+        color: #64748B !important;
+
+        font-size: 13px;
+    }
+
+    .footer strong {
+        color: #94A3B8 !important;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    section[data-testid="stSidebar"] {
+
+        background: #0B1220;
+
+        border-right:
+            1px solid rgba(255,255,255,0.08);
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 768px) {
+
+        .hero-title {
+            font-size: 30px;
+        }
+
+        .hero {
+            padding: 22px;
+        }
+
+        .card {
+            padding: 18px;
+        }
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# MODEL
+# EXACT ORIGINAL MODEL + ENCODERS
+# =========================================================
+
+model = joblib.load(
+    "models/extra_tress_credit_model.pkl"
+)
+
+encoders = {
+    "Sex": joblib.load(
+        "encoders/Sex_encoder.pkl"
+    ),
+
+    "Housing": joblib.load(
+        "encoders/Housing_encoder.pkl"
+    ),
+
+    "Saving accounts": joblib.load(
+        "encoders/Saving accounts_encoder.pkl"
+    ),
+
+    "Checking account": joblib.load(
+        "encoders/Checking account_encoder.pkl"
+    ),
+
+    "Purpose": joblib.load(
+        "encoders/Purpose_encoder.pkl"
+    )
+}
+
+
+# =========================================================
+# HERO SECTION
+# =========================================================
+
+st.markdown(
+    """
+    <div class="hero">
+
+        <div class="hero-title">
+            💳 Credit Risk Prediction
+        </div>
+
+        <div class="hero-subtitle">
+            AI-powered credit risk assessment for loan applicants
+        </div>
+
+        <div class="badge-container">
+
+            <span class="badge">Python</span>
+            <span class="badge">Machine Learning</span>
+            <span class="badge">Extra Trees</span>
+            <span class="badge">Scikit-learn</span>
+            <span class="badge">Streamlit</span>
+
+        </div>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# TOP INFORMATION CARDS
+# =========================================================
+
+info1, info2, info3, info4 = st.columns(4)
+
+with info1:
+    st.markdown(
+        """
+        <div class="info-card">
+
+            <div class="info-number">
+                01
+            </div>
+
+            <div class="info-title">
+                Applicant Analysis
+            </div>
+
+            <div class="info-text">
+                Evaluate applicant financial and personal information.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+with info2:
+    st.markdown(
+        """
+        <div class="info-card">
+
+            <div class="info-number">
+                02
+            </div>
+
+            <div class="info-title">
+                Feature Encoding
+            </div>
+
+            <div class="info-text">
+                Convert categorical applicant information into model-ready values.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+with info3:
+    st.markdown(
+        """
+        <div class="info-card">
+
+            <div class="info-number">
+                03
+            </div>
+
+            <div class="info-title">
+                ML Prediction
+            </div>
+
+            <div class="info-text">
+                Extra Trees model processes the applicant data.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+with info4:
+    st.markdown(
+        """
+        <div class="info-card">
+
+            <div class="info-number">
+                04
+            </div>
+
+            <div class="info-title">
+                Risk Result
+            </div>
+
+            <div class="info-text">
+                The application returns a Good or Bad credit risk result.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+st.write("")
+st.write("")
+
+
+# =========================================================
+# MAIN INPUT SECTION
+# =========================================================
+
+left_col, right_col = st.columns(
+    [1, 1],
+    gap="large"
+)
+
+
+# =========================================================
+# APPLICANT DETAILS
+# =========================================================
+
+with left_col:
+
+    st.markdown(
+        """
+        <div class="card">
+
+            <div class="card-title">
+                👤 Applicant Details
+            </div>
+
+            <div class="card-description">
+                Enter the applicant's basic information.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    age = st.number_input(
+        "Age",
+        18,
+        80,
+        30
+    )
+
+    sex = st.selectbox(
+        "Sex",
+        [
+            "male",
+            "female"
+        ]
+    )
+
+    job = st.selectbox(
+        "Job",
+        [
+            0,
+            1,
+            2,
+            3
+        ]
+    )
+
+    housing = st.selectbox(
+        "Housing",
+        [
+            "own",
+            "rent",
+            "free"
+        ]
+    )
+
+
+# =========================================================
+# LOAN DETAILS
+# =========================================================
+
+with right_col:
+
+    st.markdown(
+        """
+        <div class="card">
+
+            <div class="card-title">
+                💰 Loan Details
+            </div>
+
+            <div class="card-description">
+                Enter the applicant's financial and loan information.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    saving = st.selectbox(
+        "Saving Account",
+        [
+            "little",
+            "moderate",
+            "quite rich",
+            "rich"
+        ]
+    )
+
+    checking = st.selectbox(
+        "Checking Account",
+        [
+            "little",
+            "moderate",
+            "rich"
+        ]
+    )
+
+    credit = st.number_input(
+        "Credit Amount",
+        0,
+        100000,
+        1000
+    )
+
+    duration = st.number_input(
+        "Duration (Months)",
+        1,
+        72,
+        12
+    )
+
+
+# =========================================================
+# PURPOSE
+# =========================================================
+
+st.markdown(
+    """
+    <div class="card">
+
+        <div class="card-title">
+            🎯 Loan Purpose
+        </div>
+
+        <div class="card-description">
+            Select the purpose for which the credit is being requested.
+        </div>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+purpose = st.selectbox(
+    "Select Loan Purpose",
+    [
+        "radio/TV",
+        "furniture/equipment",
+        "car",
+        "business",
+        "domestic appliances",
+        "repairs",
+        "vacation/others",
+        "education"
+    ]
+)
+
+
+st.write("")
+st.write("")
+
+
+# =========================================================
+# PREDICTION BUTTON
+# =========================================================
+
+predict_col1, predict_col2, predict_col3 = st.columns(
+    [1, 2, 1]
+)
+
+with predict_col2:
+
+    predict_button = st.button(
+        "🔍  PREDICT CREDIT RISK",
+        use_container_width=True
+    )
+
+
+# =========================================================
+# PREDICTION
+# EXACT ORIGINAL ML LOGIC
+# =========================================================
+
+if predict_button:
+
+    data = pd.DataFrame({
+        "Age": [age],
+
+        "Sex": [
+            encoders["Sex"].transform([sex])[0]
+        ],
+
+        "Job": [job],
+
+        "Housing": [
+            encoders["Housing"].transform([housing])[0]
+        ],
+
+        "Saving accounts": [
+            encoders["Saving accounts"].transform([saving])[0]
+        ],
+
+        "Checking account": [
+            encoders["Checking account"].transform([checking])[0]
+        ],
+
+        "Credit amount": [credit],
+
+        "Duration": [duration],
+
+        "Purpose": [
+            encoders["Purpose"].transform([purpose])[0]
+        ]
+    })
+
+    prediction = model.predict(data)[0]
+
+
+    # =====================================================
+    # GOOD CREDIT RISK
+    # =====================================================
+
+    if prediction == 1:
+
+        st.markdown(
+            """
+            <div class="result-good">
+
+                <div class="result-icon">
+                    🟢
+                </div>
+
+                <div class="result-title">
+                    GOOD CREDIT RISK
+                </div>
+
+                <div class="result-text">
+                    Applicant shows a lower credit risk.
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    # =====================================================
+    # BAD CREDIT RISK
+    # =====================================================
+
+    else:
+
+        st.markdown(
+            """
+            <div class="result-bad">
+
+                <div class="result-icon">
+                    🔴
+                </div>
+
+                <div class="result-title">
+                    BAD CREDIT RISK
+                </div>
+
+                <div class="result-text">
+                    Applicant shows a higher credit risk.
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# =========================================================
+# HOW IT WORKS
+# =========================================================
+
+st.write("")
+st.write("")
+
+
+with st.expander("⚙️ How This Credit Risk System Works"):
+
+    st.markdown(
+        """
+        <div class="pipeline">
+
+            <div class="pipeline-step">
+                <strong>1️⃣ Applicant Input</strong><br>
+                Applicant and loan information is entered through the interface.
+            </div>
+
+            <div class="pipeline-step">
+                <strong>2️⃣ Categorical Encoding</strong><br>
+                Categorical values such as Sex, Housing, Saving Account,
+                Checking Account and Purpose are transformed using the
+                existing encoders.
+            </div>
+
+            <div class="pipeline-step">
+                <strong>3️⃣ Feature DataFrame</strong><br>
+                The processed values are assembled into the same feature
+                structure expected by the trained model.
+            </div>
+
+            <div class="pipeline-step">
+                <strong>4️⃣ Extra Trees Prediction</strong><br>
+                The trained Extra Trees model generates the credit risk prediction.
+            </div>
+
+            <div class="pipeline-step">
+                <strong>5️⃣ Final Result</strong><br>
+                The application displays either Good Credit Risk or Bad Credit Risk.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# =========================================================
+# MODEL INFORMATION
+# =========================================================
+
+with st.expander("🤖 About the Machine Learning Model"):
+
+    st.markdown(
+        """
+        <div class="card">
+
+            <div class="card-title">
+                Extra Trees Classifier
+            </div>
+
+            <div class="card-description">
+                This application uses a trained Extra Trees machine learning
+                model to classify credit risk based on applicant and loan
+                information.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# =========================================================
+# FOOTER
+# =========================================================
+
+st.markdown(
+    """
+    <div class="footer">
+
+        <strong>💳 Credit Risk Modelling</strong>
+
+        <br>
+
+        Machine Learning • Python • Scikit-learn • Streamlit
+
+        <br><br>
+
+        Built & Deployed by Harsh Antla
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
