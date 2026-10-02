@@ -31,7 +31,7 @@ def get_path(*parts):
 # CUSTOM CSS
 # =========================================================
 
-st.markdown(
+st.html(
     """
     <style>
 
@@ -421,8 +421,7 @@ st.markdown(
     }
 
     </style>
-    """,
-    unsafe_allow_html=True
+    """
 )
 
 
@@ -510,7 +509,7 @@ except Exception as e:
 # HERO
 # =========================================================
 
-st.markdown(
+st.html(
     """
     <div class="hero">
 
@@ -533,8 +532,7 @@ st.markdown(
         </div>
 
     </div>
-    """,
-    unsafe_allow_html=True
+    """
 )
 
 
@@ -547,7 +545,7 @@ info1, info2, info3, info4 = st.columns(4)
 
 with info1:
 
-    st.markdown(
+    st.html(
         """
         <div class="info-card">
 
@@ -564,14 +562,13 @@ with info1:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
 
 with info2:
 
-    st.markdown(
+    st.html(
         """
         <div class="info-card">
 
@@ -588,14 +585,13 @@ with info2:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
 
 with info3:
 
-    st.markdown(
+    st.html(
         """
         <div class="info-card">
 
@@ -612,14 +608,13 @@ with info3:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
 
 with info4:
 
-    st.markdown(
+    st.html(
         """
         <div class="info-card">
 
@@ -636,8 +631,7 @@ with info4:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
 
@@ -661,7 +655,7 @@ left_col, right_col = st.columns(
 
 with left_col:
 
-    st.markdown(
+    st.html(
         """
         <div class="card">
 
@@ -674,8 +668,7 @@ with left_col:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
     age = st.number_input(
@@ -719,7 +712,7 @@ with left_col:
 
 with right_col:
 
-    st.markdown(
+    st.html(
         """
         <div class="card">
 
@@ -732,8 +725,7 @@ with right_col:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
     saving = st.selectbox(
@@ -774,7 +766,7 @@ with right_col:
 # LOAN PURPOSE
 # =========================================================
 
-st.markdown(
+st.html(
     """
     <div class="card">
 
@@ -787,8 +779,7 @@ st.markdown(
         </div>
 
     </div>
-    """,
-    unsafe_allow_html=True
+    """
 )
 
 
@@ -875,7 +866,7 @@ if predict_button:
 
         if prediction == 1:
 
-            st.markdown(
+            st.html(
                 """
                 <div class="result-good">
 
@@ -903,7 +894,7 @@ if predict_button:
 
         else:
 
-            st.markdown(
+            st.html(
                 """
                 <div class="result-bad">
 
@@ -947,7 +938,7 @@ with st.expander(
     "⚙️ How This Credit Risk System Works"
 ):
 
-    st.markdown(
+    st.html(
         """
         <div class="pipeline">
 
@@ -979,8 +970,7 @@ with st.expander(
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
 
@@ -992,7 +982,7 @@ with st.expander(
     "🤖 About the Machine Learning Model"
 ):
 
-    st.markdown(
+    st.html(
         """
         <div class="card">
 
@@ -1007,8 +997,7 @@ with st.expander(
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
 
@@ -1016,7 +1005,7 @@ with st.expander(
 # FOOTER
 # =========================================================
 
-st.markdown(
+st.html(
     """
     <div class="footer">
 
@@ -1031,6 +1020,5 @@ st.markdown(
         Built &amp; Deployed by Harsh Antla
 
     </div>
-    """,
-    unsafe_allow_html=True
+    """
 )
