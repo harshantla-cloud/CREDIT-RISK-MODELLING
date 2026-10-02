@@ -883,8 +883,7 @@ if predict_button:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
 
 
@@ -911,8 +910,7 @@ if predict_button:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
 
     except Exception as e:
